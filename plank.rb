@@ -45,12 +45,12 @@ end
 post '/post' do  
   img = params[:image]
   boards = $boards.collect{|b| b if b[:id].to_s == params[:id]}
-  post_error("Board does not exist.") unless boards.size == 1
+  return post_error("Board does not exist.") unless boards.size == 1
   board = boards[0]
   img_path = nil
 
   if /^\s*$/.match(params[:title]) || /^\s*$/.match(params[:body])
-    post_error "Fields cannot be blank."
+    return post_error "Fields cannot be blank."
   else
     if img && img[:type] && img[:type].include?("/")
       ext = img[:type].split("/")[1]
@@ -65,17 +65,17 @@ post '/post' do
             # success
             img_path = path
           else # error copying
-            post_error "Internal error. [1]"
+            return post_error "Internal error. [1]"
           end
         else # image too large
-          post_error "File larger than 20,000 Kb."
+          return post_error "File larger than 20,000 Kb."
         end
       else # unknown image type
-        post_error "Supported image types are: jpeg, gif and png."
+        return post_error "Supported image types are: jpeg, gif and png."
       end
     else # error determining mime type
       if !img.nil?
-        post_error "Internal error. [2]"
+        return post_error "Internal error. [2]"
       end
     end
   end

@@ -46,6 +46,7 @@ def get_posts(board_id)
   for post_id in $redis.lrange "board:#{board_id}", 0, -1
     post = JSON.parse($redis.get(post_id))
     post['alt'] = i % 2
+    post['id'] = post_id.split(":")[-1]
     posts << post
     i += 1
   end

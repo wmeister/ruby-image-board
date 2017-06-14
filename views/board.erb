@@ -4,6 +4,7 @@
   body { font-size: 16px; }
   .stretch { width: 100%; }
   .post0 { background-color: #E7E7E7 }
+  .post { padding: 6px; }
 </style>
 
 <center>
@@ -60,26 +61,28 @@
 	  </center>
       </td>
     <tr>
-      <td></td>
-      <td align="right">
+      <td colspan="2" align="right">
+	<hr width="100%">
 	<div>
-	  <br><br>
 	  <b>Other Boards:</b> <span style="color: red">Sorry Unavailable</span>
+	  <br><br>
 	  </div>
 	</div>
       </td>
     </tr>
     <tr>
       <td colspan="2">
-	<hr width="100%">
 	<% for post in @posts %>
-        <div class="post<%= post['alt'] %>">
-	    <% if !post['image'].nil? %>
-              <img src="/upload/<%= post['image'] %>" border="0"><br>
+        <div class="post post<%= post['alt'] %>">
+	    <% if post['image'] %>
+              <center><img src="/upload/<%= post['image'] %>" border="0" style="max-width: 900px"><br></center>
 	    <% end %>
 	    <big><b><%= h post['title'] %></b></big><br>
-	    <i><%= post['time'] %></i><br>
+	    <small><i><%= post['time'] %></i><br></small>
 	    <p><%= h post['body'] %></p>
+	    <div style="width: 100%; text-align: right">
+	      <input type="button" onclick="window.location=window.location.protocol+'//'+window.location.host+'/post/<%= post['id'] %>'" value="Reply &#8680;">
+	    </div>
 	  </div>
 	<% end %>
       </td>

@@ -47,6 +47,7 @@ def get_posts(board_id)
     post = JSON.parse($redis.get(post_id))
     post['alt'] = i % 2
     post['id'] = post_id.split(":")[-1]
+    post['path'] = '/post/'+post['id']
     posts << post
     i += 1
   end

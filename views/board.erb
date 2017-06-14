@@ -77,11 +77,11 @@
 	    <% if post['image'] %>
               <center><img src="/upload/<%= post['image'] %>" border="0" style="max-width: 900px"><br></center>
 	    <% end %>
-	    <big><b><%= h post['title'] %></b></big><br>
+	    <big><b><a href="<%= post['path'] %>"><%= h post['title'] %></a></b></big><br>
 	    <small><i><%= post['time'] %></i><br></small>
 	    <p><%= h post['body'] %></p>
 	    <div style="width: 100%; text-align: right">
-	      <input type="button" onclick="window.location=window.location.protocol+'//'+window.location.host+'/post/<%= post['id'] %>'" value="Reply &#8680;">
+	      <input type="button" onclick="window.location=window.location.protocol+'//'+window.location.host+'<%= post['path'] %>'" value="Reply &#8680;">
 	    </div>
 	  </div>
 	<% end %>

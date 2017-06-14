@@ -104,7 +104,6 @@ post '/post' do
   end
   
   # our img is ready in img_path if they attached one
-  # XXX save the post
   id = "post:#{SecureRandom.uuid}"
   $redis.set id, JSON.dump({title: params[:title], body: params[:body], image: img_path.split("/")[-1], time: DateTime.now})
   $redis.rpush "board:#{board[:id]}", id

@@ -3,6 +3,7 @@
   #home:hover { text-decoration: underline; }
   body { font-size: 16px; }
   .stretch { width: 100%; }
+  .post0 { background-color: #E7E7E7 }
 </style>
 
 <center>
@@ -34,13 +35,13 @@
 		<tr>
 		  <td align="right">Title:</td>
 		  <td>
-		    <input type="text" name="title" class="stretch">
+		    <input type="text" name="title" class="stretch" value="<%= h @params[:title] %>">
 		  </td>
 		</tr>
 		<tr>
 		  <td align="right">Body:</td>
 		  <td>
-		    <textarea rows="10" name="body" class="stretch"></textarea>
+		    <textarea rows="10" name="body" class="stretch"><%= h @params[:body] %></textarea>
 		  </td>
 		</tr>
 		<tr>
@@ -71,6 +72,16 @@
     <tr>
       <td colspan="2">
 	<hr width="100%">
+	<% for post in @posts %>
+        <div class="post<%= post['alt'] %>">
+	    <% if !post['image'].nil? %>
+              <img src="/upload/<%= post['image'] %>" border="0"><br>
+	    <% end %>
+	    <big><b><%= h post['title'] %></b></big><br>
+	    <i><%= post['time'] %></i><br>
+	    <p><%= h post['body'] %></p>
+	  </div>
+	<% end %>
       </td>
     </tr>  
   </table>

@@ -33,6 +33,23 @@ helpers do
     status, headers, body = call env.merge("REQUEST_METHOD" => "GET", "PATH_INFO" => '/dev') # XXX shouldnt be hardcoded
     body
   end
+
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+end
+
+def get_posts(board_id)
+  posts = []
+  i = 1
+  
+  for post_id in $redis.lrange "board:#{board_id}", 0, -1
+    post = JSON.parse($redis.get(post_id))
+    post['alt'] = i % 2
+    posts << post
+    i += 1
+  end
+  posts.sort{|a,b| DateTime.parse(b['time']) <=> DateTime.parse(a['time'])}
 end
 
 get '/' do
@@ -40,9 +57,10 @@ get '/' do
 end
 
 get '/dev' do # XXX needs smarter way to match boards route
-  board = $boards[0]
-  board(board)
+  b = $boards[0]
+  board(b)
   @title = @path
+  @posts = get_posts(b[:id])
   erb :board, :layout => $main_layout  
 end
 

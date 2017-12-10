@@ -4,6 +4,7 @@ require 'fileutils'
 require 'redis'
 require 'json'
 require 'date'
+require_relative 'image_upload'
 
 $redis = Redis.new
 $main_layout = "layout/main".to_sym

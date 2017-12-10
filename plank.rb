@@ -100,6 +100,8 @@ post '/post' do
     else # error determining mime type
       if !img.nil?
         return post_error "Internal error. [2]"
+      else
+        return post_error "Image is required."
       end
     end
   end

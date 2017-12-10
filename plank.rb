@@ -75,23 +75,12 @@ post '/post' do
   if /^\s*$/.match(params[:title]) || /^\s*$/.match(params[:body])
     return post_error "Fields cannot be blank."
   else
-    if image.valid?
-      path = "#{File.dirname(__FILE__)}/static/upload/#{SecureRandom.uuid}.#{ext}"
-      FileUtils.cp(temp, path)
-      if File.exists? path
-        # success
-        img_path = path
-      else # error copying
-        return post_error "Internal error. [1]"
-      end
-    else
-      return post_error image.error
-    end
+    return post_error image.error unless image.valid? && image.save!
   end
   
   # our img is ready in img_path if they attached one
   id = "post:#{SecureRandom.uuid}"
-  $redis.set id, JSON.dump({title: params[:title], body: params[:body], image: img_path.split("/")[-1], time: DateTime.now})
+  $redis.set id, JSON.dump({title: params[:title], body: params[:body], image: image.file_name, time: DateTime.now})
   $redis.rpush "board:#{board[:id]}", id
   redirect to(board[:path]+'?success=1')
 end

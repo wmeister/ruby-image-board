@@ -67,42 +67,25 @@ get '/dev' do # XXX needs smarter way to match boards route
 end
 
 post '/post' do  
-  img = params[:image]
+  image = ImageUpload.new(params[:image])
   boards = $boards.collect{|b| b if b[:id].to_s == params[:id]}
   return post_error("Board does not exist.") unless boards.size == 1
   board = boards[0]
-  img_path = nil
 
   if /^\s*$/.match(params[:title]) || /^\s*$/.match(params[:body])
     return post_error "Fields cannot be blank."
   else
-    if img && img[:type] && img[:type].include?("/")
-      ext = img[:type].split("/")[1]
-      
-      if ['jpeg', 'png', 'gif', 'jpg'].include? ext
-        temp = img[:tempfile].path
-
-        if File.new(temp).size < 20000000 # 20,000 Kb
-          path = "#{File.dirname(__FILE__)}/static/upload/#{SecureRandom.uuid}.#{ext}"
-          FileUtils.cp(temp, path)
-          if File.exists? path
-            # success
-            img_path = path
-          else # error copying
-            return post_error "Internal error. [1]"
-          end
-        else # image too large
-          return post_error "File larger than 20,000 Kb."
-        end
-      else # unknown image type
-        return post_error "Supported image types are: jpeg, gif and png."
+    if image.valid?
+      path = "#{File.dirname(__FILE__)}/static/upload/#{SecureRandom.uuid}.#{ext}"
+      FileUtils.cp(temp, path)
+      if File.exists? path
+        # success
+        img_path = path
+      else # error copying
+        return post_error "Internal error. [1]"
       end
-    else # error determining mime type
-      if !img.nil?
-        return post_error "Internal error. [2]"
-      else
-        return post_error "Image is required."
-      end
+    else
+      return post_error image.error
     end
   end
   
